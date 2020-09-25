@@ -1,10 +1,10 @@
 import { Module, State } from 'vuex-simple';
-import { BarModule } from './modules/bar';
+import { MainModule } from './modules/main';
 
 export class MyStore {
 
     @Module()
-    public bar = new BarModule();
+    public main = new MainModule();
 
     @State()
     public version = "2.0.0";
