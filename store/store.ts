@@ -1,30 +1,11 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import {FakeData} from '../assets/fakeData/all'
-// import axios from 'axios'
+import { Module, State } from 'vuex-simple';
+import { BarModule } from './modules/bar';
 
-Vue.use(Vuex);
+export class MyStore {
 
-export default new Vuex.Store({
-    state: {
-        homePage:{
-            prods:Array
-        }
-    },
+    @Module()
+    public bar = new BarModule();
 
-    mutations: {
-        AJAXHomeProdsSuccess(state, data){
-            state.homePage.prods = data
-        }
-    },
-    actions: {
-        AJAXHomeProds({commit}){
-            // axios()
-            let fakeData = new FakeData()
-            commit('AJAXHomeProdsSuccess', fakeData.homeProds)
-        }
-    },
-    getters:{
-        getHomeProds ( state: object):Array { state.homePage.prods}
-    }
-});
+    @State()
+    public version = "2.0.0";
+}
