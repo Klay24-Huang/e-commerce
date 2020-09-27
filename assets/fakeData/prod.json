@@ -1,0 +1,17 @@
+{
+  "data": {
+    "result": {
+      "count": 1,
+      "results": {
+        "id": "abc",
+        "product": "p1",
+        "category": "category",
+        "brand": "brand",
+        "picUrl": ["https://i.imgur.com/jMB0tvv.jpeg","https://i.imgur.com/XYWWwFN.jpg"],
+        "description":"some description",
+        "price": 100,
+        "discount":10
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { Getter, Module } from 'vuex-simple';
-import {HomePageModule} from './homePage'
+import {HomePageModule } from './homePage'
+import {ProdDetailModule } from './prodDetail'
 // import { FooModule } from './foo';
 
 //this is a main module
@@ -20,4 +21,6 @@ export class MainModule {
     // }
     @Module()
     public homePage = new HomePageModule()
+
+    public prodDetail = new ProdDetailModule()
 }

@@ -1,20 +1,27 @@
 <template>
   <div id="HomePage">
     <v-container>
-      <v-row>
-        <HoverProd />
+      <div>{{getProdDetail}}</div>
+      <div>{{getHomeProds}}</div>
+      <v-row class="prods">
+        <template v-for="(prod, index) in getHomeProds" >
+          <HoverProd :home-prod="prod" :key="index"/>
+        </template>
       </v-row>
     </v-container>
   </div>
 </template>
 
 <style scoped lang="scss">
+.prods{
+  margin-top:500px;
+}
+
 #HomePage {
   margin-top: 135px;
   background-image: url("../assets/pic/home.jpg");
   background-size: 85%;
   background-position: right top;
-  height: 600px;
 }
 
 img {
@@ -28,19 +35,32 @@ import fakeData from "../assets/fakeData/homeProducts.json";
 // import fakeData from "../assets/fakeData/homeProducts.json"
 import { useStore, useModule } from "vuex-simple";
 import { MyStore } from "@/store/store";
+import { IHomeProds } from "@/store/models/homeProdModel";
 // import { FooModule } from "@/store/modules/foo";
 
 @Component
-export default class MyComponent extends Vue {
+export default class VHomePage extends Vue {
+  public get getHomeProds() {
+    return this.store.main.homePage.prods;
+  }
 
   public mounted() {
-    this.ajaxHomeProds()
+    this.axiosHomeProds();
+    this.axiosProdDetail();
   }
 
   public store: MyStore = useStore(this.$store);
 
-  public ajaxHomeProds() {
-    this.store.main.homePage.ajaxProds();
+  public axiosHomeProds() {
+    this.store.main.homePage.axiosProds();
+  }
+
+  public axiosProdDetail() {
+    this.store.main.prodDetail.axiosProd();
+  }
+
+  public get getProdDetail() {
+    return this.store.main.prodDetail.prod
   }
 
   //  some example here

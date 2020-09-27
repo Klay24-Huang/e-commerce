@@ -41,9 +41,9 @@ export class HomePageModule {
         this.prods = prods;
     }
 
-    public async ajaxProds() {
+    public axiosProds() {
         let fakeData = new FakeData()
-        await myPromise(fakeData.homeProds).then((success:any) => {
+        myPromise(fakeData.homeProds).then((success:any) => {
             this.setProds(success.data.result.results)
         })
     }

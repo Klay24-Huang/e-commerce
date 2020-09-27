@@ -4,7 +4,11 @@
     <v-container id="top" fluid pt-0>
       <v-row align="center">
         <!-- shipping text -->
-        <v-col id="ShippingText" class="col-12 col-lg-3 text-lg-right text-center" order-lg="2">
+        <v-col
+          id="ShippingText"
+          class="col-12 col-lg-3 text-lg-right text-center"
+          order-lg="2"
+        >
           <span class="subtitle-2 text">FREE SHIPPING</span>
           <span class="cart">
             <span class="mx-2">--</span>
@@ -18,16 +22,47 @@
         </v-col>
         <!-- logo -->
         <v-col class="col-6 text-center col-lg-4" order-lg="1">
-          <img id="logo" src="~/assets/pic/logo.png" alt="logo" />
+          <nuxt-link to="/">
+            <img id="logo" src="~/assets/pic/logo.png" alt="logo" />
+          </nuxt-link>
         </v-col>
         <!-- cart -->
         <v-col class="col-3 text-right col-lg-1" order-lg="3">
-          <span>{{cart.items}}</span>
+          <span>{{ cart.items }}</span>
           <v-icon>{{ icon.cart }}</v-icon>
         </v-col>
       </v-row>
     </v-container>
     <nuxt />
+    <v-container id="Footer">
+      <v-divider></v-divider>
+      <v-row>
+        <v-col cols="4">
+          <v-row class="d-flex justify-center"
+            ><a href="#">PRIVACY POLICY</a></v-row
+          >
+          <v-row class="d-flex justify-center"
+            ><a href="#">TERMS & CONDITIONS</a></v-row
+          >
+          <v-row class="d-flex justify-center"><a href="#">ABOUT</a></v-row>
+        </v-col>
+        <v-col cols="4"></v-col>
+        <v-col cols="4">
+          <v-row class="d-flex justify-center"
+            ><a href="#">SHIPPING INFO</a></v-row
+          >
+          <v-row class="d-flex justify-center"
+            ><a href="#">RETURNS / EXCHANGES</a></v-row
+          >
+          <v-row class="d-flex justify-center"><a href="#">CONTACT</a></v-row>
+        </v-col>
+        <v-col cols="12 d-flex justify-center">
+          <span class="text--center"
+            >&copy; {{ new Date().getFullYear() }}</span
+          >
+        </v-col>
+      </v-row>
+    </v-container>
   </v-app>
 </template>
 
@@ -57,6 +92,16 @@
   #ShippingText {
     background-color: transparent;
     color: black;
+  }
+}
+
+#Footer {
+  a,
+  a:hover,
+  a:focus,
+  a:active {
+    text-decoration: none;
+    color: inherit;
   }
 }
 </style>
