@@ -34,26 +34,27 @@ export class ProdDetailModule {
 
     constructor() {
         this.prod = {
-            id: '',
-            product: '',
-            category: '',
-            brand: '',
-            picUrl: [],
-            description: '',
-            price: 0,
-            discount: 0
+            id:"id",
+            product: "product",
+            category: 'category',
+            brand:'brand',
+            picUrl:[],
+            description:'description',
+            price:0,
+            discount:0
+
         }
     }
 
     @Mutation()
     public setProd(prod: IProdDetail) {
-        this.prod = prod;
+        this.prod = prod
     }
 
-    @Getter()
-    public getProd() {
-        return this.prod
-    }
+    // @Getter()
+    // public getProd() {
+    //     return this.prod
+    // }
 
     public axiosProd() {
             let fakeData = new FakeData()

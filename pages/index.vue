@@ -1,8 +1,6 @@
 <template>
   <div id="HomePage">
     <v-container>
-      <div>{{getProdDetail}}</div>
-      <div>{{getHomeProds}}</div>
       <v-row class="prods">
         <template v-for="(prod, index) in getHomeProds" >
           <HoverProd :home-prod="prod" :key="index"/>
@@ -46,7 +44,7 @@ export default class VHomePage extends Vue {
 
   public mounted() {
     this.axiosHomeProds();
-    this.axiosProdDetail();
+    // this.axiosProdDetail();
   }
 
   public store: MyStore = useStore(this.$store);
