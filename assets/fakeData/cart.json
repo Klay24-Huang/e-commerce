@@ -1,0 +1,27 @@
+{
+  "data": {
+    "result": {
+      "count": 3,
+      "results": [
+        {
+            "id": "abc",
+            "title": "Cremo Bourbon & Oak Cologne Spray, A Sophisticated Blend of Distiller’s Spice, Fine Bourbon and White Oak, 3.4 Oz",
+            "brand": "Visit the Cremo Store",
+            "picUrl": ["https://i.imgur.com/jMB0tvv.jpeg","https://i.imgur.com/XYWWwFN.jpg"],
+            "price": 22.99,
+            "discount":10,
+            "quantity": 3
+          },
+          {
+            "id": "abc",
+            "title": "AAACremo Bourbon & Oak Cologne Spray, A Sophisticated Blend of Distiller’s Spice, Fine Bourbon and White Oak, 3.4 Oz",
+            "brand": "Visit the Cremo Store",
+            "picUrl": ["https://i.imgur.com/jMB0tvv.jpeg","https://i.imgur.com/XYWWwFN.jpg"],
+            "price": 35.99,
+            "discount":10,
+            "quantity": 4
+          }
+      ]
+    }
+  }
+}

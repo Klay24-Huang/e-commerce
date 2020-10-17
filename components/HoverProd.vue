@@ -1,6 +1,6 @@
 <template>
   <v-col class="hoverCard">
-    <nuxt-link to="/products/A">
+    <nuxt-link :to="`/products/${homeProd.params}`">
       <v-hover>
         <template v-slot:default="{ hover }">
           <v-card max-width="350">
@@ -8,10 +8,10 @@
               <img :src="homeProd.picUrl" />
               <v-fade-transition>
                 <v-overlay v-if="hover" absolute opacity="0.7" color="black">
-                  <div class="category">{{ homeProd.category }}</div>
-                  <div class="product">{{ homeProd.product }}</div>
+                  <!-- <div class="category">{{ homeProd.category }}</div> -->
+                  <div class="product">{{ homeProd.title }}</div>
                   <div class="brand">{{ homeProd.brand }}</div>
-                  <div class="price">{{ homeProd.price }}</div>
+                  <div class="price">${{ homeProd.price }}.00</div>
                 </v-overlay>
               </v-fade-transition>
             </v-row>
@@ -67,7 +67,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { IHomeProds } from "@/store/models/homeProdModel";
 
 @Component
-export default class VHomeProd extends Vue {
+export default class ProductCard extends Vue {
   // the product of this card to show
   @Prop(Object) homeProd: IHomeProds | undefined;
 }

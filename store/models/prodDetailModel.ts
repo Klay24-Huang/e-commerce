@@ -1,10 +1,10 @@
 export interface IProdDetail {
-    id: string,
+    _id: string,
     product: string,
     category: string,
     brand: string,
     picUrl: string[],
-    description: string,
+    description: string[],
     price: number,
-    discount: number
+    discount: number,
 }

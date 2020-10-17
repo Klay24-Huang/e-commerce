@@ -16,7 +16,10 @@
     "@nuxtjs/pwa": "^3.0.2",
     "core-js": "^3.6.5",
     "nuxt": "^2.14.5",
+    "query-string": "^6.13.5",
     "vue-class-component": "^7.2.6",
+    "vue-cookies": "^1.7.4",
+    "vue-cookies-ts": "^1.5.19",
     "vue-property-decorator": "^9.0.0",
     "vuex-simple": "^2.2.0"
   },

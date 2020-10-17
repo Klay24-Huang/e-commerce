@@ -1,9 +1,10 @@
 <template>
   <div id="HomePage">
+    <div class="text-h1 slogan">Bazaar Beauty</div>
     <v-container>
       <v-row class="prods">
-        <template v-for="(prod, index) in getHomeProds" >
-          <HoverProd :home-prod="prod" :key="index"/>
+        <template v-for="(prod, index) in productsToShow">
+          <HoverProd :home-prod="prod" :key="index" />
         </template>
       </v-row>
     </v-container>
@@ -11,37 +12,48 @@
 </template>
 
 <style scoped lang="scss">
-.prods{
-  margin-top:500px;
+.slogan{
+  font-weight: 500;
+}
+
+.prods {
+  margin-top: 950px;
 }
 
 #HomePage {
   margin-top: 135px;
   background-image: url("../assets/pic/home.jpg");
-  background-size: 85%;
   background-position: right top;
+  background-size: 85%;
+  @media (max-width: 600px){
+    background-size: 120%;
+  }
 }
 
 img {
   width: 350px;
 }
+
+#test {
+  height: 950px;
+  width: 100%;
+}
 </style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import fakeData from "../assets/fakeData/homeProducts.json";
 // import fakeData from "../assets/fakeData/homeProducts.json"
 import { useStore, useModule } from "vuex-simple";
 import { MyStore } from "@/store/store";
 import { IHomeProds } from "@/store/models/homeProdModel";
+
 // import { FooModule } from "@/store/modules/foo";
 
-@Component
+@Component({
+  components: {},
+})
 export default class VHomePage extends Vue {
-  public get getHomeProds() {
-    return this.store.main.homePage.prods;
-  }
-
   public mounted() {
     this.axiosHomeProds();
     // this.axiosProdDetail();
@@ -49,16 +61,33 @@ export default class VHomePage extends Vue {
 
   public store: MyStore = useStore(this.$store);
 
+  //data
+  private productsToShow: IHomeProds[] = [];
+
+  //how many products does current homepage has
+  private productsIndex: number = 0;
+
+  // computed
+  public get getHomeProds() {
+    return this.store.main.homePage.prods;
+  }
+
+  @Watch("getHomeProds")
+  watchHomeProds() {
+    const count = 9;
+    const products = this.store.main.homePage.prods;
+    //set 9 products for dault to show
+    if (this.productsToShow.length === 0) {
+      for (let index = 0; index < count; index++) {
+        this.productsToShow.push(products[index]);
+      }
+      this.productsIndex = count;
+    }
+  }
+
+  //method
   public axiosHomeProds() {
     this.store.main.homePage.axiosProds();
-  }
-
-  public axiosProdDetail() {
-    this.store.main.prodDetail.axiosProd();
-  }
-
-  public get getProdDetail() {
-    return this.store.main.prodDetail.prod
   }
 
   //  some example here

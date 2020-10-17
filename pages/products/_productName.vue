@@ -21,19 +21,21 @@
           <v-col cols="9">
             <v-row>
               <v-btn @click="qtySubtract">-</v-btn>
-              <input type="text" v-model="quatity">
+              <input type="text" v-model="quatity" />
               <v-btn @click="qtyAdd">+</v-btn>
             </v-row>
           </v-col>
         </v-row>
         <!-- add cart -->
-        <v-btn color="accent" elevation="2" outlined block>ADD TO CART</v-btn>
+        <v-btn color="accent" elevation="2" outlined block @click="addToCart"
+          >ADD TO CART</v-btn
+        >
       </v-col>
       <!-- description -->
       <v-col cols="4">
         <ul>
-          <li v-for="item in getProdDetail.description" :key="item">
-            {{item}}
+          <li v-for="item in prodDescript" :key="item">
+            {{ item }}
           </li>
         </ul>
       </v-col>
@@ -41,7 +43,7 @@
   </v-container>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #ProdContent {
   margin-top: 135px;
 }
@@ -56,23 +58,29 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { useStore, useModule } from "vuex-simple";
 import { MyStore } from "@/store/store";
 import { IProdDetail } from "@/store/models/prodDetailModel";
+import VueCookies from "vue-cookies-ts";
+
+Vue.use(VueCookies);
 
 @Component
 export default class ProductDetail extends Vue {
   public mounted() {
-    this.axiosProdDetail();
+    const productParams = this.$route.params.productName;
+    this.axiosProdDetail(productParams);
   }
 
   @Watch("getProdDetail")
   watch() {
-    console.log("watch");
+    this.prodDescript = this.getProdDetail.description;
   }
 
   //store
   public store: MyStore = useStore(this.$store);
 
-  public axiosProdDetail() {
-    this.store.main.prodDetail.axiosProd();
+  public axiosProdDetail(_productParams: string) {
+    this.store.main.prodDetail.axiosGetProductDetail({
+      productParams: _productParams,
+    });
   }
 
   public get getProdDetail() {
@@ -82,22 +90,51 @@ export default class ProductDetail extends Vue {
   //data
   public quatity: number = 0;
 
+  public prodDescript: string[] = [];
+
   //method
-  private qtyAdd(){
-    this.quatity++
+  private qtyAdd() {
+    this.quatity++;
   }
 
-  private qtySubtract(){
-    if(this.quatity === 0){
-      return
+  private qtySubtract() {
+    if (this.quatity === 0) {
+      return;
     }
-    this.quatity--
+    this.quatity--;
+  }
+
+  private addToCart() {
+    const isLogin = this.store.main.account.isLogin;
+    const quantity = this.quatity;
+    const item = { _id: this.getProdDetail._id, quantity: quantity };
+
+    if (quantity === 0) {
+      return;
+    }
+
+    // add cart info to db
+    if (isLogin) {
+      return;
+    }
+
+    // add cart info to cookies
+    let rawCart: any = this.$cookies.get("cart");
+    let cart = !rawCart ? [] : JSON.parse(rawCart);
+    const index = cart.findIndex((x: any) => x._id === item._id);
+    
+    if (index !== -1) {
+      cart[index].quantity += quantity;
+    } else {
+      cart.push(item);
+    }
+
+    // save cookie
+    this.$cookies.set("cart", JSON.stringify(cart));
+
+    // update store
+    this.store.main.cart.setCart({ isLogin: isLogin, cookie: cart });
   }
 }
 </script>
 
-<style lang='scss' scoped>
-.test {
-  margin-top: 200px;
-}
-</style>

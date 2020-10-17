@@ -2,6 +2,8 @@ import { Action, Mutation, State, Getter } from 'vuex-simple';
 import { IProdDetail } from '../models/prodDetailModel'
 import { FakeData } from '@/assets/fakeData/all'
 import { myPromise } from '@/store/myPromise'
+import axios from 'axios'
+import backendUrl from '@/assets/json/apiUrl.json'
 // import { IResponse } from '@/store/models/responseModel'
 
 export class ProdDetailModule {
@@ -34,12 +36,12 @@ export class ProdDetailModule {
 
     constructor() {
         this.prod = {
-            id:"id",
+            _id:"id",
             product: "product",
             category: 'category',
             brand:'brand',
             picUrl:[],
-            description:'description',
+            description:[],
             price:0,
             discount:0
 
@@ -55,12 +57,17 @@ export class ProdDetailModule {
     // public getProd() {
     //     return this.prod
     // }
-
-    public axiosProd() {
-            let fakeData = new FakeData()
-            myPromise(fakeData.prodDetail).then((success: any) => {
-                this.setProd(success.data.result.results)
-            })
-        // this.setProd(fakeData.prodDetail.data.result.results)
+    public axiosGetProductDetail(_params: any) {
+        axios.get(`${backendUrl.url}/api/product/${_params.productParams}`).then((result: any) => {
+            this.setProd (result.data)
+        })
     }
+
+    // public axiosProd() {
+    //         let fakeData = new FakeData()
+    //         myPromise(fakeData.prodDetail).then((success: any) => {
+    //             this.setProd(success.data.result.results)
+    //         })
+    //     // this.setProd(fakeData.prodDetail.data.result.results)
+    // }
 }

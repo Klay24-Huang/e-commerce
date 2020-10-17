@@ -1,8 +1,7 @@
 import { Mutation, State } from 'vuex-simple';
 import { IHomeProds } from '../models/homeProdModel'
-import { FakeData } from '@/assets/fakeData/all'
-import { myPromise } from '@/store/myPromise'
-// import { IResponse } from '@/store/models/responseModel'
+import axios from "axios";
+import backendUrl from "@/assets/json/apiUrl.json";
 
 export class HomePageModule {
     // some example here
@@ -42,9 +41,13 @@ export class HomePageModule {
     }
 
     public axiosProds() {
-        let fakeData = new FakeData()
-        myPromise(fakeData.homeProds).then((success:any) => {
-            this.setProds(success.data.result.results)
+        axios.get(`${backendUrl.url}/api/product/makeup/all`).then((result: any) => {
+           this.setProds(result.data)
         })
+
+        // let fakeData = new FakeData()
+        // myPromise(fakeData.homeProds).then((success:any) => {
+        //     this.setProds(success.data.result.results)
+        // })
     }
 }

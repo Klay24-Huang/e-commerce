@@ -17,7 +17,12 @@
         </v-col>
         <!-- search and list icon -->
         <v-col class="col-3 col-lg-4" order-lg="0">
-          <v-icon class="ml-md-9 ml-3">{{ icon.list }}</v-icon>
+          <v-icon v-show="!showList" class="ml-md-9 ml-3" @click="switchList">{{
+            icon.list
+          }}</v-icon>
+          <v-icon v-show="showList" class="ml-md-9 ml-3" @click="switchList">{{
+            icon.cancel
+          }}</v-icon>
           <v-icon class="ml-md-9 ml-3">{{ icon.search }}</v-icon>
         </v-col>
         <!-- logo -->
@@ -26,14 +31,23 @@
             <img id="logo" src="~/assets/pic/logo.png" alt="logo" />
           </nuxt-link>
         </v-col>
-        <!-- cart -->
         <v-col class="col-3 text-right col-lg-1" order-lg="3">
-          <span>{{ cart.items }}</span>
-          <v-icon>{{ icon.cart }}</v-icon>
+          <!-- account -->
+          <nuxt-link to="/login">
+            <v-icon class="mr-3 mr-md-9">{{ icon.account }}</v-icon>
+          </nuxt-link>
+          <!-- cart -->
+          <nuxt-link id="cartItems" to="/cart">
+            <span>{{ getCartCount }}</span>
+            <v-icon class="mr-3 mr-md-9">{{ icon.cart }}</v-icon>
+          </nuxt-link>
         </v-col>
       </v-row>
     </v-container>
-    <nuxt />
+    <!-- view or List -->
+    <nuxt v-show="!showList" />
+    <List v-show="showList"></List>
+
     <v-container id="Footer">
       <v-divider></v-divider>
       <v-row>
@@ -66,9 +80,21 @@
   </v-app>
 </template>
 
+<style lang="scss">
+.marginOfTop {
+  margin-top: 135px;
+}
+</style>
+
 <style scoped lang="scss">
+#cartItems {
+  color: black;
+  text-decoration: none;
+}
+
 #top {
   position: fixed;
+  z-index: 1;
 }
 
 #logo {
@@ -107,22 +133,108 @@
 </style>
 
 <script lang="ts">
-import { mdiFormatListBulleted, mdiMagnify, mdiCartVariant } from "@mdi/js";
-import Vue from "vue";
+import {
+  mdiFormatListBulleted,
+  mdiMagnify,
+  mdiCartVariant,
+  mdiWindowClose,
+  mdiAccount,
+} from "@mdi/js";
+import List from "@/components/List.vue";
+import VueCookies from "vue-cookies-ts";
+import { useStore } from "vuex-simple";
+import { MyStore } from "@/store/store";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import cookies from "~/plugins/cookies";
+import {getCartCookies} from '@/assets/script/cookies.ts'
 
-export default Vue.extend({
-  name: "default",
-  data() {
-    return {
-      icon: {
-        list: mdiFormatListBulleted,
-        search: mdiMagnify,
-        cart: mdiCartVariant,
-      },
-      cart: {
-        items: 0,
-      },
-    };
+Vue.use(VueCookies);
+
+@Component({
+  components: {
+    List,
   },
-});
+})
+export default class Layout extends Vue {
+  public mounted() {
+    // this.getCartCookies();
+    getCartCookies(this.store, this.$cookies.get("cart"))
+  }
+
+  //store
+  public store: MyStore = useStore(this.$store);
+
+  public get getProdDetail() {
+    return this.store.main.prodDetail.prod;
+  }
+
+  //data
+  private icon = {
+    list: mdiFormatListBulleted,
+    search: mdiMagnify,
+    cart: mdiCartVariant,
+    cancel: mdiWindowClose,
+    account: mdiAccount,
+  };
+
+  private showList = false;
+
+  // computed
+  private get getCartCount(){
+    return this.store.main.cart.count
+  }
+
+  //methods
+  private switchList() {
+    this.showList = !this.showList;
+  }
+
+  //check does cookie has cart items and add to store
+  private getCartCookies() {
+    // if already get cookies
+    if (this.store.main.cart.cookieCart.length > 0) {
+      return
+    }
+    const rawCart: any = this.$cookies.get("cart");
+    const cart = !rawCart ? [] : JSON.parse(rawCart);
+    const isLogin = this.store.main.account.isLogin;
+    this.store.main.cart.setCart({ isLogin: isLogin, cookie: cart });
+  }
+}
+
+// export default Vue.extend({
+//   name: "default",
+//   mounted() {},
+//   data() {
+//     return {
+//       icon: {
+//         list: mdiFormatListBulleted,
+//         search: mdiMagnify,
+//         cart: mdiCartVariant,
+//         cancel: mdiWindowClose,
+//         account: mdiAccount,
+//       },
+//       store: this.$store,
+//       cart: {
+//         items: 0,
+//       },
+//       cookies: {},
+//       showList: false,
+//     };
+//   },
+//   components: {
+//     List,
+//   },
+//   methods: {
+//     switchList() {
+//       this.$data.showList = !this.$data.showList;
+//     },
+//     getCartCookies() {
+//       const rawCart: any = this.$cookies.get("cart");
+//       const cart = !rawCart ? [] : JSON.parse(rawCart);
+//       this.store.main
+//     },
+//   },
+//   computed: {},
+// });
 </script>
