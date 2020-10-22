@@ -1,42 +1,99 @@
 <template>
   <div id="HomePage">
-    <div class="text-h1 slogan">Bazaar Beauty</div>
+    <div class="d-flex flex-column flex-md-row pl-10 pt-5">
+      <div class="text-md-h1 text-h2 slogan">Bazaar</div>
+      <div class="text-md-h1 text-h2 slogan pl-md-10 pl-16">Beauty</div>
+    </div>
+    <img id="HomePic" src="~/assets/pic/home.jpg" />
+    <MyButton id="Btn">
+      <div slot="header">Summer Picks</div>
+      <div slot="text">2020 SHOPPING GUIDE</div>
+    </MyButton>
     <v-container>
+      <!-- product cards -->
       <v-row class="prods">
-        <template v-for="(prod, index) in productsToShow">
+          <v-col cols="12" lg="4" v-for="(prod, index) in productsToShow" :key="index">
           <HoverProd :home-prod="prod" :key="index" />
-        </template>
+          </v-col>
       </v-row>
+      <!-- carousels -->
+      <Carousel id="Carousel" class="mt-10" :prods="productsToShow"></Carousel>
     </v-container>
   </div>
 </template>
 
 <style scoped lang="scss">
-.slogan{
+#Btn {
+  margin: 50px 40px;
+  outline-style: solid;
+  outline-width: thin;
+  background-color: white;
+  max-width: 30%;
+  top: -600px;
+
+  @media (max-width: 1264px) {
+    outline-color: rgba(0, 0, 0, 0);
+    top: -200px;
+    max-width: 50%;
+    margin-left: auto;
+    margin-right: 50px;
+  }
+
+  @media (max-width: 960px) {
+    outline-color: black;
+    max-width: 80%;
+    margin: 50px auto;
+    left: 0px;
+    top: 0;
+  }
+
+  @media (max-width: 600px) {
+    outline-color: black;
+    max-width: 100%;
+    margin: 50px 30px;
+    top: 0;
+  }
+}
+
+.slogan {
   font-weight: 500;
+  z-index: 1;
+
+  @media (max-width: 600px) {
+    display: none;
+  }
 }
 
 .prods {
-  margin-top: 950px;
+  margin-top: 0px;
+}
+
+#HomePic {
+  width: 85%;
+  display: block;
+  margin-left: auto;
+  margin-top: -150px;
+  @media (max-width: 1264px) {
+    margin-top: -100px;
+  }
+
+  @media (max-width: 960px) {
+    margin-top: -120px;
+  }
+
+  @media (max-width: 600px) {
+    margin-top: -20px;
+    width: 100%;
+    margin-right: auto;
+  }
 }
 
 #HomePage {
   margin-top: 135px;
-  background-image: url("../assets/pic/home.jpg");
-  background-position: right top;
-  background-size: 85%;
-  @media (max-width: 600px){
-    background-size: 120%;
-  }
 }
 
 img {
   width: 350px;
-}
-
-#test {
-  height: 950px;
-  width: 100%;
 }
 </style>
 

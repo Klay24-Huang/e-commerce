@@ -33,6 +33,7 @@
             <v-col cols="2">
               <!-- <Quantity :quantity="prod.quantity" /> -->
               <v-text-field
+                class="input-center"
                 @blur="qtyClick(index)"
                 @click="qtyClick(index)"
                 v-model="prod.quantity"
@@ -72,9 +73,19 @@
   </v-container>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #CartContent {
   margin-top: 135px;
+}
+</style>
+
+<style lang="scss">
+.input-center {
+  .v-text-field__slot {
+    input {
+      text-align: center;
+    }
+  }
 }
 </style>
 

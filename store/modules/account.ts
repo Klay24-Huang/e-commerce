@@ -55,12 +55,35 @@ export class AccountModule {
     });
   }
 
+  public axiosGoogleLogin(_params: any){
+    return new Promise( async(resolve, reject)=>{
+      const loginResult:any = await axios.post(
+        `${backendUrl.url}/api/account/google-login/`,
+        _params
+      );
+
+      if (loginResult.message === "login") {
+        this.setLoginAndToken(loginResult.token);
+        this.setId(loginResult._id)
+      }
+      resolve(loginResult.data);
+    })
+  }
+
   public axiosSaveCartToDb(_params: any) {
     return new Promise(async (resolve, reject)=>{
       if (_params.cart.length === 0) {
         resolve()
       }
       await axios.patch(`${backendUrl.url}/api/account/save-cart/`, _params);
+      resolve()
+    })
+  }
+
+  // update cart after member has login
+  public axiosUpdateCartToDb(_params: any){
+    return new Promise(async (resolve, reject)=>{
+      await axios.patch(`${backendUrl.url}/api/account/update-cart/`, _params);await
       resolve()
     })
   }

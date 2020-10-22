@@ -1,7 +1,6 @@
 <template >
   <v-container class="marginOfTop"
     ><v-row>
-      <a :href="googleLoginUrl">test login</a>
       <v-col cols="6" offset="3">
         <!-- sign-in -->
         <div v-show="!newAccount">
@@ -26,20 +25,47 @@
                   </v-row>
                 </v-col>
                 <v-row>
-                  <v-col offset="9" cols="3"
-                    ><v-btn @click="originalLogin"> Continue </v-btn></v-col
-                  >
+                  <v-col offset="6" cols="6" class="text-right">
+                    <a :href="googleLoginUrl">
+                      <div class="google-btn">
+                        <MyButton>
+                          <div slot="text">
+                            <v-row no-gutters>
+                              <v-col cols="2">
+                                <v-img
+                                  width="20px"
+                                  style="margin-right: 8px"
+                                  alt="Google sign-in"
+                                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+                                ></v-img>
+                              </v-col>
+                              <v-col cols="10"> Login with Google </v-col>
+                            </v-row>
+                          </div>
+                        </MyButton>
+                      </div>
+                    </a>
+                    <a href="#">
+                      <div @click="originalLogin" class="btn mt-4">
+                        <MyButton>
+                          <div class="text-center" slot="text">Continue</div>
+                        </MyButton>
+                      </div>
+                    </a>
+                  </v-col>
                 </v-row>
               </v-row>
             </v-card-text>
           </v-card>
           <v-row>
-            <v-col cols="4"><v-divider></v-divider></v-col>
+            <v-col class="d-flex align-center" cols="4"><div class="hr"></div></v-col>
             <v-col cols="4" class="text-center">New to Bazzar?</v-col>
-            <v-col cols="4"><v-divider></v-divider></v-col>
-            <v-col cols="12">
-              <v-btn @click="signInSwitch">Create your account</v-btn></v-col
-            >
+            <v-col class="d-flex align-center" cols="4"><div class="hr"></div></v-col>
+            <v-col cols="6" offset="3" class="text-center" @click="signInSwitch">
+              <MyButton class="btn">
+                <div slot="text">Create your account</div>
+              </MyButton>
+              </v-col>
           </v-row>
         </div>
         <!-- create account -->
@@ -85,21 +111,24 @@
                 </v-row>
               </v-col>
               <v-row>
-                <v-col offset="9" cols="3"
-                  ><v-btn @click="createAccount"> Continue </v-btn></v-col
-                >
+                <v-col offset="6" cols="6" @click="createAccount">
+                  <MyButton class="btn text-center">
+                    <div slot="text">Continue</div>
+                  </MyButton>
+                  </v-col>
               </v-row>
             </v-row>
           </v-card-text>
           <v-card-actions>
             Already have an account?
-            <span class="ml-3" @click="signInSwitch">Sign-in</span>
+            <span class="ml-3 blue--text text--darken-2 cursor" @click="signInSwitch">Sign-in</span>
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row></v-container
   >
 </template>
+
 <script lang='ts'>
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { useStore } from "vuex-simple";
@@ -116,8 +145,10 @@ Vue.use(VueCookies);
 })
 export default class login extends Vue {
   public mounted() {
-    //google redirection
-    const urlParams = queryString.parse(window.location.search);
+    const googleCode = this.$route.query.code;
+    if (typeof googleCode === "string") {
+      this.googleLogin(googleCode);
+    }
   }
 
   //store
@@ -146,6 +177,7 @@ export default class login extends Vue {
   // method
   private signInSwitch() {
     this.newAccount = !this.newAccount;
+    window.scrollTo(0, 0);
   }
 
   private async originalLogin() {
@@ -154,7 +186,7 @@ export default class login extends Vue {
     );
 
     if (loginResult.message === "login") {
-      this.afterLogin(loginResult.token,loginResult._id);
+      this.afterLogin(loginResult.token, loginResult._id);
       return;
     }
 
@@ -192,13 +224,14 @@ export default class login extends Vue {
       });
   }
 
-  private afterLogin(_token: string, _id:string) {
+  private afterLogin(_token: string, _id: string) {
     this.store.main.account.setLoginAndToken(_token);
-    this.store.main.account.setId(_id)
+    this.store.main.account.setId(_id);
     const redirectUrl = this.store.main.redirectUrl;
     //reset
-    this.store.main.cart.prods = []
-    this.dealWithCartCookie()
+    this.store.main.cart.prods = [];
+    this.dealWithCartCookie();
+    console.log(redirectUrl)
     this.$router.push(redirectUrl);
     this.store.main.redirectUrl = "/";
   }
@@ -207,17 +240,45 @@ export default class login extends Vue {
   private async dealWithCartCookie() {
     const rawCart: any = this.$cookies.get("cart");
     const cart = !rawCart ? [] : JSON.parse(rawCart);
-    const _id =  this.store.main.account._id
+    const _id = this.store.main.account._id;
     const params = { _id: _id, cart: cart };
 
     await this.store.main.account.axiosSaveCartToDb(params);
     //get cart from db
-    this.store.main.cart.axiosDbCart({_id: _id, isLogin: true})
+    this.store.main.cart.axiosDbCart({ _id: _id, isLogin: true });
 
     this.$cookies.remove("cart");
+  }
+
+  private async googleLogin(_code: string | undefined) {
+    if (_code === undefined) {
+      return;
+    }
+    const loginResult: any = await this.store.main.account.axiosGoogleLogin({
+      code: _code,
+    });
+    if (loginResult.message === "login") {
+      this.afterLogin(loginResult.token, loginResult._id);
+      return;
+    }
   }
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss' scope>
+.cursor{
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.google-btn {
+  outline: solid;
+  outline-width: thin;
+}
+
+.btn {
+  outline: solid;
+  outline-width: thin;
+}
 </style>

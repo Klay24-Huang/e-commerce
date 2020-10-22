@@ -23,7 +23,7 @@
           <v-icon v-show="showList" class="ml-md-9 ml-3" @click="switchList">{{
             icon.cancel
           }}</v-icon>
-          <v-icon class="ml-md-9 ml-3">{{ icon.search }}</v-icon>
+          <v-icon class="ml-md-9 ml-3 icon-hide">{{ icon.search }}</v-icon>
         </v-col>
         <!-- logo -->
         <v-col class="col-6 text-center col-lg-4" order-lg="1">
@@ -34,43 +34,61 @@
         <v-col class="col-3 text-right col-lg-1" order-lg="3">
           <!-- account -->
           <nuxt-link to="/login">
-            <v-icon class="mr-3 mr-md-9">{{ icon.account }}</v-icon>
+            <v-icon class="mr-3 mr-md-7 icon-hide">{{ icon.account }}</v-icon>
           </nuxt-link>
           <!-- cart -->
           <nuxt-link id="cartItems" to="/cart">
             <span>{{ getCartCount }}</span>
-            <v-icon class="mr-3 mr-md-9">{{ icon.cart }}</v-icon>
+            <v-icon class="mr-3 mr-md-0">{{ icon.cart }}</v-icon>
           </nuxt-link>
         </v-col>
       </v-row>
     </v-container>
     <!-- view or List -->
     <nuxt v-show="!showList" />
-    <List v-show="showList"></List>
+    <List v-show="showList" v-on:childMethod="hideList"></List>
 
+    <!-- footer -->
     <v-container id="Footer">
-      <v-divider></v-divider>
       <v-row>
-        <v-col cols="4">
-          <v-row class="d-flex justify-center"
-            ><a href="#">PRIVACY POLICY</a></v-row
-          >
-          <v-row class="d-flex justify-center"
-            ><a href="#">TERMS & CONDITIONS</a></v-row
-          >
-          <v-row class="d-flex justify-center"><a href="#">ABOUT</a></v-row>
+        <v-col class="d-flex align-center">
+          <div class="hr"></div>
         </v-col>
-        <v-col cols="4"></v-col>
-        <v-col cols="4">
-          <v-row class="d-flex justify-center"
-            ><a href="#">SHIPPING INFO</a></v-row
-          >
-          <v-row class="d-flex justify-center"
-            ><a href="#">RETURNS / EXCHANGES</a></v-row
-          >
-          <v-row class="d-flex justify-center"><a href="#">CONTACT</a></v-row>
+        <v-col class="text-center text-h4">BAZZAR</v-col>
+        <v-col class="d-flex align-center">
+          <div class="hr"></div>
         </v-col>
-        <v-col cols="12 d-flex justify-center">
+      </v-row>
+      <v-row>
+        <!-- left -->
+        <v-col cols="12" sm="4" order="2" order-sm="1">
+          <div class="d-flex justify-center flex-column text-center">
+            <a href="#">PRIVACY POLICY</a>
+            <a href="#">TERMS & CONDITIONS</a>
+            <a href="#">ABOUT</a>
+          </div>
+        </v-col>
+        <!-- center -->
+        <v-col
+          cols="12"
+          sm="4"
+          order="1"
+          order-sm="2"
+          class="d-flex align-center justify-space-around"
+        >
+          <v-icon>{{ icon.twitter }}</v-icon>
+          <v-icon>{{ icon.facebook }}</v-icon>
+          <v-icon>{{ icon.instagram }}</v-icon>
+        </v-col>
+        <!-- right -->
+        <v-col cols="12" sm="4" order="3" order-sm="3">
+          <div class="d-flex justify-center flex-column text-center">
+            <a href="#">SHIPPING INFO</a>
+            <a href="#">RETURNS / EXCHANGES</a>
+            <a href="#">CONTACT</a>
+          </div>
+        </v-col>
+        <v-col order="4" cols="12 d-flex justify-center">
           <span class="text--center"
             >&copy; {{ new Date().getFullYear() }}</span
           >
@@ -84,9 +102,15 @@
 .marginOfTop {
   margin-top: 135px;
 }
+.hr {
+  width: 100%;
+  background-color: black;
+  height: 1px;
+}
 </style>
 
 <style scoped lang="scss">
+
 #cartItems {
   color: black;
   text-decoration: none;
@@ -130,6 +154,12 @@
     color: inherit;
   }
 }
+
+.icon-hide {
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
+}
 </style>
 
 <script lang="ts">
@@ -139,6 +169,9 @@ import {
   mdiCartVariant,
   mdiWindowClose,
   mdiAccount,
+  mdiTwitter,
+  mdiFacebook,
+  mdiInstagram,
 } from "@mdi/js";
 import List from "@/components/List.vue";
 import VueCookies from "vue-cookies-ts";
@@ -146,7 +179,7 @@ import { useStore } from "vuex-simple";
 import { MyStore } from "@/store/store";
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import cookies from "~/plugins/cookies";
-import {getCartCookies} from '@/assets/script/cookies.ts'
+import { getCartCookies } from "@/assets/script/cookies.ts";
 
 Vue.use(VueCookies);
 
@@ -158,7 +191,7 @@ Vue.use(VueCookies);
 export default class Layout extends Vue {
   public mounted() {
     // this.getCartCookies();
-    getCartCookies(this.store, this.$cookies.get("cart"))
+    getCartCookies(this.store, this.$cookies.get("cart"));
   }
 
   //store
@@ -175,13 +208,16 @@ export default class Layout extends Vue {
     cart: mdiCartVariant,
     cancel: mdiWindowClose,
     account: mdiAccount,
+    twitter: mdiTwitter,
+    facebook: mdiFacebook,
+    instagram: mdiInstagram,
   };
 
   private showList = false;
 
   // computed
-  private get getCartCount(){
-    return this.store.main.cart.count
+  private get getCartCount() {
+    return this.store.main.cart.count;
   }
 
   //methods
@@ -189,11 +225,15 @@ export default class Layout extends Vue {
     this.showList = !this.showList;
   }
 
+  private hideList() {
+    this.showList = false;
+  }
+
   //check does cookie has cart items and add to store
   private getCartCookies() {
     // if already get cookies
     if (this.store.main.cart.cookieCart.length > 0) {
-      return
+      return;
     }
     const rawCart: any = this.$cookies.get("cart");
     const cart = !rawCart ? [] : JSON.parse(rawCart);
