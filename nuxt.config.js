@@ -9,7 +9,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - e-commerce',
+    titleTemplate: '',
     title: 'e-commerce',
     meta: [{
         charset: 'utf-8'
@@ -26,8 +26,8 @@ export default {
     ],
     link: [{
       rel: 'icon',
-      type: 'image/x-icon',
-      href: '/favicon.ico'
+      type: 'image/png',
+      href: '/favicon.png'
     }]
   },
 
@@ -81,5 +81,15 @@ export default {
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {}
+  build: {},
+  loading: '~/components/Loading.vue',
+  /**
+* Gitlab
+*/
+router: {
+  base: '/bazaar/',  
+},
+generate: {
+  dir: 'public',
+},
 }

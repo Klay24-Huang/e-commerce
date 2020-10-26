@@ -3,19 +3,49 @@
     <v-row>
       <!-- order info -->
       <v-col cols="7">
-        <v-row>
+        <v-row v-if="!isCheckout">
           <v-col cols="12"> Exprss checkout </v-col>
           <v-col cols="12"> Shipping address </v-col>
           <v-col cols="12">
-            <v-text-field solo placeholder="Name" v-model="information.name"></v-text-field>
+            <v-text-field
+              solo
+              placeholder="Name"
+              v-model="information.name"
+            ></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field solo placeholder="Address" v-model="information.address"></v-text-field>
+            <v-text-field
+              solo
+              placeholder="Address"
+              v-model="information.address"
+            ></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field solo placeholder="Phone" v-model="information.phone"></v-text-field>
+            <v-text-field
+              solo
+              placeholder="Phone"
+              v-model="information.phone"
+            ></v-text-field>
           </v-col>
-          <v-col cols="12"><v-btn @click="axiosCreateOrder">Continue</v-btn></v-col>
+          <v-col cols="3"
+            >
+            <MyButton @click.native="axiosCreateOrder" class="btn text-center"><div slot="text">Continue</div></MyButton>
+            </v-col
+          >
+        </v-row>
+        <!-- //after checkout -->
+        <v-row v-else>
+          <v-col cols="12" class="text-h4">
+            Your order has been established
+          </v-col>
+          <!-- <v-col cols="12">
+            <div class="text-h5">continue to payment</div>
+          </v-col> -->
+          <v-col cols="4" class="text-h5">
+            <nuxt-link to="/orders">
+            <MyButton class="btn"><div slot="text">check your orders</div></MyButton>
+            </nuxt-link>
+          </v-col>
         </v-row>
       </v-col>
       <v-col id="cartInfo" cols="5"
@@ -46,12 +76,15 @@ import axios from "axios";
 import backendUrl from "@/assets/json/apiUrl.json";
 
 @Component({
-  name: "",
-  components: {},
+ head(){
+    return{
+      title:'Checkout'
+    }
+  }
 })
 export default class Checkout extends Vue {
   public mounted() {
-    this.axiosCartProducts()
+    this.axiosCartProducts();
   }
   // store
   public store: MyStore = useStore(this.$store);
@@ -61,29 +94,31 @@ export default class Checkout extends Vue {
 
   public total: number = this.store.main.cart.subtotal;
 
+  private isCheckout = false;
+
   private information = {
-    name:'',
-    address: '',
-    phone:''
-  }
+    name: "",
+    address: "",
+    phone: "",
+  };
 
   // computed
-  public get getProductsFromStore(){
-    return this.store.main.cart.prods
+  public get getProductsFromStore() {
+    return this.store.main.cart.prods;
   }
 
-  public get getTotal(){
-    return this.store.main.cart.subtotal
+  public get getTotal() {
+    return this.store.main.cart.subtotal;
   }
 
   @Watch("getProductsFromStore")
-  watchStoreProducts(){
-    this.cartItem = this.store.main.cart.prods
+  watchStoreProducts() {
+    this.cartItem = this.store.main.cart.prods;
   }
 
-    @Watch("getTotal")
-  watchStoreTotal(){
-    this.total = this.store.main.cart.subtotal
+  @Watch("getTotal")
+  watchStoreTotal() {
+    this.total = this.store.main.cart.subtotal;
   }
 
   //method
@@ -97,14 +132,18 @@ export default class Checkout extends Vue {
     }
   }
 
-  private async axiosCreateOrder(){
-    let params:any = Object.assign({},this.information)
-    params.memberId = this.store.main.account._id
-    await axios.post(`${backendUrl.url}/api/order/`,params).then(success=>{
-      console.log('ok')
-    }).catch(error =>{
-      console.log('error')
-    })
+  private async axiosCreateOrder() {
+    let params: any = Object.assign({}, this.information);
+    params.memberId = this.store.main.account._id;
+    await axios
+      .post(`${backendUrl.url}/api/order/`, params)
+      .then((success) => {
+        console.log("create order ok");
+      })
+      .catch((error) => {
+        console.log("error");
+      });
+      this.isCheckout = true
   }
 }
 </script>

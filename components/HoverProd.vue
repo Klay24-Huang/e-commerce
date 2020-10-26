@@ -25,17 +25,17 @@
     <!-- // show large card -->
     <div v-else class="large-card">
       <v-row>
-        <v-col cols="5" sm="3" class="product-info pl-10">
+        <v-col cols="6" sm="3" class="product-info pl-10">
           <div class="text-subtitle-2">{{ homeProd.brand }}</div>
           <div class="text-h6 text-sm-h4 pt-2">{{ homeProd.title }}</div>
           <div class="text-h5 py-4">${{ homeProd.price }}.00</div>
           <nuxt-link :to="`/products/${homeProd.params}`">
-            <MyButton class="btn">
+            <MyButton class="btn mx-auto">
               <div class="text-center" slot="text">SHOP</div>
             </MyButton>
           </nuxt-link>
         </v-col>
-        <v-col cols="7" sm="9">
+        <v-col cols="6" sm="9">
           <nuxt-link :to="`/products/${homeProd.params}`">
             <img :src="homeProd.picUrl" />
           </nuxt-link>

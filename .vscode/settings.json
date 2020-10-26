@@ -2,5 +2,6 @@
     "cSpell.words": [
         "Vuex",
         "submodule"
-    ]
+    ],
+    "liveServer.settings.port": 5501
 }

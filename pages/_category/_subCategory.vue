@@ -5,10 +5,16 @@
       <v-col cols="4"
         ><v-row>
           <!-- category title -->
-          <v-col class="text-h4" cols="12">{{ category }}</v-col>
-          <v-col class="text-h6" cols="12"
+          <v-col
+            class="text-h4 animate__animated animate__slideInLeft"
+            cols="12"
+            >{{ category }}</v-col
+          >
+          <v-col
+            class="text-h6 animate__animated animate__slideInLeft"
+            cols="12"
             ><div v-for="item in subCategoryList" :key="item.title">
-              <nuxt-link :to="item.link">
+              <nuxt-link :to="item.link" class="hover hover-1">
                 {{ item.title }}
               </nuxt-link>
             </div></v-col
@@ -18,9 +24,14 @@
       <!-- product unit -->
       <v-col cols="8">
         <v-row>
-          <v-col class="text-h2" cols="6">{{ category }}</v-col>
+          <v-col
+            class="text-h2 animate__animated animate__slideInLeft"
+            cols="6"
+            >{{ category }}</v-col
+          >
           <v-col cols="4" offset="2">
             <v-select
+              class="animate__animated animate__slideInLeft"
               v-bind:items="sort"
               label="Sort by"
               v-model="sortValue"
@@ -31,6 +42,7 @@
             cols="6"
             v-for="(product, index) in products[page - 1]"
             :key="index"
+            class="animate__animated animate__slideInUp"
           >
             <HoverProd :home-prod="product" />
           </v-col>
@@ -65,10 +77,14 @@ import { useStore } from "vuex-simple";
 import { MyStore } from "@/store/store";
 import { ICategory } from "@/store/models/categoryModel";
 import { IProdDetail } from "@/store/models/prodDetailModel";
+import { loading } from "@/assets/script/loading";
 
 @Component({
-  name: "",
-  components: {},
+  head() {
+    return {
+      title: "Category",
+    };
+  },
 })
 export default class Category extends Vue {
   public mounted() {
@@ -76,6 +92,7 @@ export default class Category extends Vue {
     const subCategory = this.$route.params.subCategory;
     this.axiosGetOneCategory(category);
     this.axiosGetProducts({ category: category, subCategory: subCategory });
+    loading(this);
   }
 
   //store

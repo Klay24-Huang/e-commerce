@@ -40,6 +40,13 @@ export class AccountModule {
     this._id = _id;
   }
 
+  @Mutation()
+  public logout(){
+    this.isLogin = false
+    this.token = ''
+    this._id = ''
+  }
+
   public axiosOriginalLogin(_params: any) {
     return new Promise(async (resolve, reject) => {
       const loginResult: any = await axios.get(

@@ -23,6 +23,15 @@ export class CartModule {
   public subtotal: number = 0
 
   @Mutation()
+  public logout(){
+    this.count = 0
+    this.prods = []
+    this.cookieCart = []
+    this.dbCart = []
+    this.subtotal = 0
+  }
+
+  @Mutation()
   public setProds(prods: ICartProd[]) {
     this.prods = prods;
   }

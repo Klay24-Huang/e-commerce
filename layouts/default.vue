@@ -1,5 +1,11 @@
 <template>
   <v-app>
+    <SideBar :showList="showList" @hideList="hideList"></SideBar>
+    <v-overlay
+      :absolute="true"
+      :value="showList"
+      @click.native="hideList"
+    ></v-overlay>
     <!-- top bar -->
     <v-container id="top" fluid pt-0>
       <v-row align="center">
@@ -8,33 +14,38 @@
           id="ShippingText"
           class="col-12 col-lg-3 text-lg-right text-center"
           order-lg="2"
-        >
-          <span class="subtitle-2 text">FREE SHIPPING</span>
-          <span class="cart">
-            <span class="mx-2">--</span>
-            <span class="text-caption">on all orders over $35*</span>
+          >
+          <span class="animate__animated animate__fadeInLeft">
+            <span class="subtitle-2 text">FREE SHIPPING</span>
+            <span class="cart">
+              <span class="mx-2">--</span>
+              <span class="text-caption">on all orders over $35*</span>
+            </span>
           </span>
         </v-col>
         <!-- search and list icon -->
         <v-col class="col-3 col-lg-4" order-lg="0">
-          <v-icon v-show="!showList" class="ml-md-9 ml-3" @click="switchList">{{
+          <v-icon class="ml-md-9 ml-3" @click="switchList">{{
             icon.list
-          }}</v-icon>
-          <v-icon v-show="showList" class="ml-md-9 ml-3" @click="switchList">{{
-            icon.cancel
           }}</v-icon>
           <v-icon class="ml-md-9 ml-3 icon-hide">{{ icon.search }}</v-icon>
         </v-col>
         <!-- logo -->
-        <v-col class="col-6 text-center col-lg-4" order-lg="1">
+        <v-col
+          class="col-6 text-center col-lg-4 animate__animated animate__fadeInLeft"
+          order-lg="1"
+        >
           <nuxt-link to="/">
             <img id="logo" src="~/assets/pic/logo.png" alt="logo" />
           </nuxt-link>
         </v-col>
         <v-col class="col-3 text-right col-lg-1" order-lg="3">
-          <!-- account -->
-          <nuxt-link to="/login">
+          <!-- account or orders -->
+          <nuxt-link to="/login" v-if="!getIsLogin">
             <v-icon class="mr-3 mr-md-7 icon-hide">{{ icon.account }}</v-icon>
+          </nuxt-link>
+           <nuxt-link to="/orders" v-else>
+            <v-icon class="mr-3 mr-md-7 icon-hide">{{ icon.order }}</v-icon>
           </nuxt-link>
           <!-- cart -->
           <nuxt-link id="cartItems" to="/cart">
@@ -45,9 +56,8 @@
       </v-row>
     </v-container>
     <!-- view or List -->
-    <nuxt v-show="!showList" />
-    <List v-show="showList" v-on:childMethod="hideList"></List>
-
+    <nuxt />
+    <!-- <List v-show="showList" v-on:childMethod="hideList"></List> -->
     <!-- footer -->
     <v-container id="Footer">
       <v-row>
@@ -63,7 +73,8 @@
         <!-- left -->
         <v-col cols="12" sm="4" order="2" order-sm="1">
           <div class="d-flex justify-center flex-column text-center">
-            <a href="#">PRIVACY POLICY</a>
+            <a href="#">
+              PRIVACY POLICY</a>
             <a href="#">TERMS & CONDITIONS</a>
             <a href="#">ABOUT</a>
           </div>
@@ -74,7 +85,7 @@
           sm="4"
           order="1"
           order-sm="2"
-          class="d-flex align-center justify-space-around"
+          class="d-flex align-center justify-space-around animate__animated animate__fadeInLeft"
         >
           <v-icon>{{ icon.twitter }}</v-icon>
           <v-icon>{{ icon.facebook }}</v-icon>
@@ -99,18 +110,53 @@
 </template>
 
 <style lang="scss">
+$animate: all 0.2s ease-in-out;
+
 .marginOfTop {
   margin-top: 135px;
 }
+
 .hr {
   width: 100%;
   background-color: black;
   height: 1px;
 }
+
+.hover {
+  transition: $animate;
+  position: relative;
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 0px;
+    width: 0px;
+    height: 1px;
+    margin: 5px 0 0;
+    transition: $animate;
+    transition-duration: 0.3s;
+    opacity: 1;
+    background-color: black;
+  }
+  &.hover-1 {
+    &:before,
+    &:after {
+      left: 0;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    &:before,
+    &:after {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+}
 </style>
 
 <style scoped lang="scss">
-
 #cartItems {
   color: black;
   text-decoration: none;
@@ -118,7 +164,7 @@
 
 #top {
   position: fixed;
-  z-index: 1;
+  z-index: 2;
 }
 
 #logo {
@@ -172,20 +218,24 @@ import {
   mdiTwitter,
   mdiFacebook,
   mdiInstagram,
+  mdiBorderColor
 } from "@mdi/js";
 import List from "@/components/List.vue";
+import SideBar from "@/components/SideBar.vue";
 import VueCookies from "vue-cookies-ts";
 import { useStore } from "vuex-simple";
 import { MyStore } from "@/store/store";
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import cookies from "~/plugins/cookies";
 import { getCartCookies } from "@/assets/script/cookies.ts";
+import "animate.css";
 
 Vue.use(VueCookies);
 
 @Component({
   components: {
     List,
+    SideBar,
   },
 })
 export default class Layout extends Vue {
@@ -211,6 +261,7 @@ export default class Layout extends Vue {
     twitter: mdiTwitter,
     facebook: mdiFacebook,
     instagram: mdiInstagram,
+    order:mdiBorderColor
   };
 
   private showList = false;
@@ -218,6 +269,10 @@ export default class Layout extends Vue {
   // computed
   private get getCartCount() {
     return this.store.main.cart.count;
+  }
+
+  private get getIsLogin(){
+    return this.store.main.account.isLogin
   }
 
   //methods

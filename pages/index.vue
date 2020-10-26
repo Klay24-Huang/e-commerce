@@ -1,11 +1,11 @@
 <template>
   <div id="HomePage">
     <div class="d-flex flex-column flex-md-row pl-10 pt-5">
-      <div class="text-md-h1 text-h2 slogan">Bazaar</div>
-      <div class="text-md-h1 text-h2 slogan pl-md-10 pl-16">Beauty</div>
+      <div class="text-md-h1 text-h2 slogan animate__animated animate__fadeInLeft">Bazaar</div>
+      <div class="text-md-h1 text-h2 slogan pl-md-10 pl-16 animate__animated animate__fadeInLeft">Beauty</div>
     </div>
-    <img id="HomePic" src="~/assets/pic/home.jpg" />
-    <MyButton id="Btn">
+    <img id="HomePic" class="animate__animated animate__fadeInLeft" src="~/assets/pic/home.jpg" />
+    <MyButton id="Btn" class="animate__animated animate__fadeInLeft">
       <div slot="header">Summer Picks</div>
       <div slot="text">2020 SHOPPING GUIDE</div>
     </MyButton>
@@ -108,7 +108,11 @@ import { IHomeProds } from "@/store/models/homeProdModel";
 // import { FooModule } from "@/store/modules/foo";
 
 @Component({
-  components: {},
+  head(){
+    return{
+      title:'Bazaar'
+    }
+  }
 })
 export default class VHomePage extends Vue {
   public mounted() {

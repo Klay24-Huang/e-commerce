@@ -4,6 +4,7 @@ import { ProdDetailModule } from "./prodDetail";
 import { CartModule } from "./cart";
 import { CategoryModule } from "./category";
 import { AccountModule } from "./account";
+import { OrderModule } from "./orders";
 
 // import { FooModule } from './foo';
 
@@ -22,13 +23,20 @@ export class MainModule {
   // public get total() {
   //     return this.foo1.counter + this.foo2.counter;
   // }
-  
+
   @State()
-  public redirectUrl:string = '/'
-  
+  public redirectUrl: string = "/";
+
   @Mutation()
-  public setRedirect(_url:string){
-    this.redirectUrl = _url
+  public setRedirect(_url: string) {
+    this.redirectUrl = _url;
+  }
+
+  @Mutation()
+  public logout(){
+    this.account.logout()
+    this.cart.logout()
+    this.orders.logout()
   }
 
   @Module()
@@ -45,4 +53,7 @@ export class MainModule {
 
   @Module()
   public account = new AccountModule();
+
+  @Module()
+  public orders = new OrderModule();
 }

@@ -72,14 +72,22 @@ import { MyStore } from "@/store/store";
 import { IProdDetail } from "@/store/models/prodDetailModel";
 import VueCookies from "vue-cookies-ts";
 import { mdiPlus, mdiMinus } from "@mdi/js";
+import { loading } from "@/assets/script/loading";
 
 Vue.use(VueCookies);
 
-@Component
+@Component({
+  head(){
+    return{
+      title:'Profuct'
+    }
+  }
+})
 export default class ProductDetail extends Vue {
   public mounted() {
     const productParams = this.$route.params.productName;
     this.axiosProdDetail(productParams);
+    loading(this)
   }
 
   @Watch("getProdDetail")
